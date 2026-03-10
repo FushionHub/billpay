@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --background-light: #f6f6f8;
+  --background-dark: #101622;
+  --primary: #0f49bd;
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-background-light: var(--background-light);
+  --color-background-dark: var(--background-dark);
+}
+
+body {
+  background-color: var(--background-light);
+  color: #0f172a; /* slate-900 */
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--background-dark);
+    color: #f1f5f9; /* slate-100 */
+  }
+}
+
+/* Base styles for dark mode toggling */
+.dark body {
+  background-color: var(--background-dark);
+  color: #f1f5f9; /* slate-100 */
+}
