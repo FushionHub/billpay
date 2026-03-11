@@ -3,7 +3,29 @@ import { Suspense } from "react";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 
+import { useSearchParams, useRouter } from "next/navigation";
 function DepositReviewContent() {
+  const searchParams = useSearchParams();
+  const amount = searchParams.get("amount") || "1250.00";
+  const router = useRouter();
+  const handleDeposit = async () => {
+    try {
+      const res = await fetch("/api/deposit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: Number(amount), sourceAccountId: "chase_123", destinationAccountId: "wallet_456" })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Deposit successful!");
+        router.push("/");
+      } else {
+        alert("Mock error.\n" + (data.error || ""));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
       <div className="layout-container flex h-full grow flex-col">
@@ -77,7 +99,7 @@ function DepositReviewContent() {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <p className="text-slate-500 dark:text-slate-400 text-sm">Deposit Amount</p>
-                    <p className="text-slate-900 dark:text-slate-100 font-medium">$1,250.00</p>
+                    <p className="text-slate-900 dark:text-slate-100 font-medium">{`${amount}`}</p>
                   </div>
                   <div className="flex justify-between items-center">
                     <p className="text-slate-500 dark:text-slate-400 text-sm">Processing Fee</p>
@@ -85,7 +107,7 @@ function DepositReviewContent() {
                   </div>
                   <div className="pt-3 border-t border-primary/10 flex justify-between items-center">
                     <p className="text-slate-900 dark:text-slate-100 font-bold">Total to Deposit</p>
-                    <p className="text-primary text-2xl font-black">$1,250.00</p>
+                    <p className="text-primary text-2xl font-black">{`${amount}`}</p>
                   </div>
                 </div>
               </div>
@@ -102,7 +124,7 @@ function DepositReviewContent() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+              <button onClick={handleDeposit} className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
                 <span>Confirm Deposit</span>
                 <span className="material-symbols-outlined">arrow_forward</span>
               </button>
