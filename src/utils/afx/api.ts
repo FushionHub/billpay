@@ -1,4 +1,4 @@
-const AFX_API_URL = process.env.AFX_API_URL || 'https://staging.afx-server.com';
+const AFX_API_URL = process.env.AFX_API_URL || 'https://prod.afx-server.com';
 const AFX_API_KEY = process.env.AFX_API_KEY || 'test-api-key-123';
 
 export async function createAfxCustomer(email: string, fullName: string) {
