@@ -1,9 +1,12 @@
+"use client";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
+import { useUser } from "@/context/UserContext";
 
 export default function Dashboard() {
+  const { balance, transactions } = useUser();
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
       <div className="layout-container flex h-full grow flex-col pb-16 md:pb-0">
@@ -17,7 +20,7 @@ export default function Dashboard() {
                   <div className="w-full md:w-1/2 p-6 flex flex-col justify-between">
                     <div>
                       <p className="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-tight">Total Balance</p>
-                      <h3 className="text-3xl font-bold mt-1">$12,450.80</h3>
+                      <h3 className="text-3xl font-bold mt-1">${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
                       <div className="flex items-center gap-2 mt-2 text-emerald-600 dark:text-emerald-400">
                         <span className="material-symbols-outlined text-sm">trending_up</span>
                         <span className="text-sm font-medium">+12.5% this month</span>
@@ -103,70 +106,34 @@ export default function Dashboard() {
                   <button className="text-primary text-sm font-bold hover:underline">View All</button>
                 </div>
                 <div className="divide-y divide-slate-100 dark:divide-slate-800">
-                  <div className="px-6 py-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <div className="flex items-center gap-4">
-                      <div className="size-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-orange-500">bolt</span>
+                  {transactions.map(tx => (
+                    <div key={tx.id} className="px-6 py-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <div className="size-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                          <span className={`material-symbols-outlined ${tx.iconColor}`}>{tx.icon}</span>
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold capitalize">{tx.title}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">{tx.date} • {tx.type}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-bold">Electric Bill Payment</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Oct 12, 2023 • Utility</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-red-500">-$84.50</p>
-                      <p className="text-[10px] text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full font-bold uppercase">Success</p>
-                    </div>
-                  </div>
-                  <div className="px-6 py-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <div className="flex items-center gap-4">
-                      <div className="size-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-primary">download</span>
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold">Deposit from Bank</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Oct 10, 2023 • Wallet</p>
+                      <div className="text-right">
+                        <p className={`text-sm font-bold ${tx.amount > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                          {tx.amount > 0 ? '+' : '-'}${Math.abs(tx.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </p>
+                        <p className="text-[10px] text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full font-bold uppercase">{tx.status}</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-emerald-500">+$500.00</p>
-                      <p className="text-[10px] text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full font-bold uppercase">Success</p>
+                  ))}
+                  {transactions.length === 0 && (
+                    <div className="px-6 py-8 text-center text-slate-500">
+                      No recent transactions.
                     </div>
-                  </div>
-                  <div className="px-6 py-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <div className="flex items-center gap-4">
-                      <div className="size-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-indigo-500">shopping_bag</span>
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold">Amazon Gift Card</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Oct 08, 2023 • Purchase</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-red-500">-$25.00</p>
-                      <p className="text-[10px] text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-full font-bold uppercase">Success</p>
-                    </div>
-                  </div>
-                  <div className="px-6 py-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <div className="flex items-center gap-4">
-                      <div className="size-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-slate-500">person</span>
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold">Transfer to Sarah M.</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Oct 05, 2023 • Transfer</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-red-500">-$120.00</p>
-                      <p className="text-[10px] text-amber-500 bg-amber-50 dark:bg-amber-900/20 px-1.5 py-0.5 rounded-full font-bold uppercase">Pending</p>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
-          </main>
+              </main>
         </div>
         <BottomNav />
       </div>

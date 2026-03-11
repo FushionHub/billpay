@@ -1,6 +1,11 @@
+"use client";
+import { useState } from "react";
+import { useUser } from "@/context/UserContext";
 import Link from "next/link";
 
 export default function WithdrawAmount() {
+  const { balance } = useUser();
+  const [amount, setAmount] = useState("");
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
       <div className="layout-container flex h-full grow flex-col">
@@ -29,7 +34,7 @@ export default function WithdrawAmount() {
                 <p className="text-slate-900 dark:text-slate-100 text-3xl font-bold leading-tight">How much?</p>
                 <div className="flex items-center gap-2">
                   <span className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-normal">Current balance:</span>
-                  <span className="text-primary text-sm font-bold leading-normal">$12,450.00</span>
+                <span className="text-primary text-sm font-bold leading-normal">${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                 </div>
               </div>
 
@@ -78,7 +83,7 @@ export default function WithdrawAmount() {
               </div>
 
               <div className="flex flex-col gap-4 mt-4">
-                <Link href="/withdraw/review" className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                <Link href={`/withdraw/review?amount=${amount}`} className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
                   <span>Continue to Review</span>
                   <span className="material-symbols-outlined">arrow_forward</span>
                 </Link>

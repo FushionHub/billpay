@@ -3,7 +3,9 @@ import { Suspense } from "react";
 import Link from "next/link";
 
 import { useSearchParams, useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext";
 function WithdrawReviewContent() {
+  const { updateBalance, addTransaction } = useUser();
   const searchParams = useSearchParams();
   const amount = searchParams.get("amount") || "500.00";
   const router = useRouter();
@@ -17,6 +19,19 @@ function WithdrawReviewContent() {
       const data = await res.json();
       if (data.success) {
         alert("Withdrawal initiated successfully!");
+
+        updateBalance(-Number(amount));
+        addTransaction({
+            id: String(Date.now()),
+            title: 'Withdrawal to Bank',
+            date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            type: 'Transfer',
+            amount: -Number(amount),
+            status: 'Success',
+            icon: 'account_balance',
+            iconColor: 'text-slate-500'
+        });
+
         router.push("/");
       } else {
         alert("Mock API response error.\n" + (data.error || ""));

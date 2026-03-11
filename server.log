@@ -24,3 +24,62 @@
  GET /send/review?amount=150.75 200 in 67ms (compile: 5ms, render: 62ms)
  GET /deposit 200 in 287ms (compile: 96ms, render: 191ms)
  GET /profile 200 in 52ms (compile: 3ms, render: 49ms)
+✓ Compiled in 2.4s
+✓ Compiled in 457ms
+ GET / 200 in 2.5s (compile: 945ms, render: 1601ms)
+ GET /deposit/amount 200 in 2.5s (compile: 2.4s, render: 112ms)
+ GET / 200 in 175ms (compile: 3ms, render: 172ms)
+ GET /deposit/amount 200 in 275ms (compile: 125ms, render: 150ms)
+ GET /deposit/review?amount=1000 200 in 1128ms (compile: 1084ms, render: 44ms)
+Deposit Error: Error: Failed to create transaction: {"code":"AUTHENTICATION_ERROR","error":"Invalid authorization header","details":{}}
+    at createAfxTransaction (src/utils/afx/api.ts:50:24)
+    at async POST (src/app/api/deposit/route.ts:14:29)
+  48 |         body: JSON.stringify(data)
+  49 |     });
+> 50 |     if (!res.ok) throw new Error(`Failed to create transaction: ${await res.text()}`);
+     |                        ^
+  51 |     return res.json();
+  52 | }
+  53 |
+ POST /api/deposit 500 in 2.4s (compile: 1927ms, render: 521ms)
+ GET / 200 in 133ms (compile: 5ms, render: 129ms)
+ GET /deposit/amount 200 in 58ms (compile: 3ms, render: 55ms)
+ GET /deposit/review?amount=1000 200 in 29ms (compile: 3ms, render: 26ms)
+[PaymentRouter] Attempting outbound transfer via afx...
+[PaymentRouter] Gateway afx failed: Failed to create transaction: {"code":"AUTHENTICATION_ERROR","error":"Invalid authorization header","details":{}}
+[PaymentRouter] Attempting outbound transfer via flutterwave...
+[Flutterwave] Initiating transfer of 1000 USD to wallet_456
+Supabase Error: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '\n' +
+    'Caused by: Error: getaddrinfo ENOTFOUND mock.supabase.co (ENOTFOUND)\n' +
+    'Error: getaddrinfo ENOTFOUND mock.supabase.co\n' +
+    '    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)\n' +
+    '    at GetAddrInfoReqWrap.callbackTrampoline (node:internal/async_hooks:130:17)',
+  hint: '',
+  code: ''
+}
+ POST /api/deposit 200 in 330ms (compile: 107ms, render: 223ms)
+ GET / 200 in 90ms (compile: 3ms, render: 87ms)
+✓ Compiled in 147ms
+ GET / 200 in 404ms (compile: 216ms, render: 189ms)
+ GET /deposit/amount 200 in 264ms (compile: 122ms, render: 142ms)
+ GET /deposit/review?amount=1000 200 in 30ms (compile: 9ms, render: 21ms)
+[PaymentRouter] Attempting outbound transfer via afx...
+[PaymentRouter] Gateway afx failed: Failed to create transaction: {"code":"AUTHENTICATION_ERROR","error":"Invalid authorization header","details":{}}
+[PaymentRouter] Attempting outbound transfer via flutterwave...
+[Flutterwave] Initiating transfer of 1000 USD to wallet_456
+Supabase Error: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '\n' +
+    'Caused by: Error: getaddrinfo ENOTFOUND mock.supabase.co (ENOTFOUND)\n' +
+    'Error: getaddrinfo ENOTFOUND mock.supabase.co\n' +
+    '    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)\n' +
+    '    at GetAddrInfoReqWrap.callbackTrampoline (node:internal/async_hooks:130:17)',
+  hint: '',
+  code: ''
+}
+ POST /api/deposit 200 in 267ms (compile: 3ms, render: 264ms)
+ GET / 200 in 20ms (compile: 3ms, render: 17ms)

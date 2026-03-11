@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Secure financial dashboard and digital gift card marketplace",
 };
 
+import { UserProvider } from "@/context/UserContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -23,7 +25,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
-        {children}
+        <UserProvider>{children}</UserProvider>
       </body>
     </html>
   );

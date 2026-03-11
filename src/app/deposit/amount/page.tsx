@@ -1,6 +1,11 @@
+"use client";
+import { useState } from "react";
+import { useUser } from "@/context/UserContext";
 import Link from "next/link";
 
 export default function DepositAmount() {
+  const { balance } = useUser();
+  const [amount, setAmount] = useState("");
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
       <div className="layout-container flex h-full grow flex-col">
@@ -38,11 +43,11 @@ export default function DepositAmount() {
               <div className="flex flex-col items-center gap-1 w-full px-6">
                 <div className="flex items-baseline gap-1">
                   <span className="text-4xl font-bold text-slate-400">$</span>
-                  <input autoFocus className="w-full max-w-[280px] bg-transparent border-none text-slate-900 dark:text-slate-100 text-6xl font-bold text-center focus:ring-0 placeholder:text-slate-200 dark:placeholder:text-slate-700" placeholder="0.00" type="text" />
+                  <input autoFocus className="w-full max-w-[280px] bg-transparent border-none text-slate-900 dark:text-slate-100 text-6xl font-bold text-center focus:ring-0 placeholder:text-slate-200 dark:placeholder:text-slate-700" placeholder="0.00" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
                 </div>
                 <div className="mt-4 flex flex-col items-center gap-1">
                   <p className="text-slate-500 dark:text-slate-400 text-sm">Current Balance</p>
-                  <p className="text-slate-900 dark:text-slate-100 text-lg font-bold">$4,250.00</p>
+                  <p className="text-slate-900 dark:text-slate-100 text-lg font-bold">${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
                 </div>
               </div>
             </div>
@@ -71,7 +76,7 @@ export default function DepositAmount() {
             </div>
 
             <div className="mt-10 mb-8">
-              <Link href="/deposit/review" className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+              <Link href={`/deposit/review?amount=${amount}`} className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
                 <span>Continue to Review</span>
                 <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
               </Link>
