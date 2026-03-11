@@ -1,6 +1,30 @@
+"use client";
+import { Suspense } from "react";
 import Link from "next/link";
 
-export default function WithdrawReview() {
+import { useSearchParams, useRouter } from "next/navigation";
+function WithdrawReviewContent() {
+  const searchParams = useSearchParams();
+  const amount = searchParams.get("amount") || "500.00";
+  const router = useRouter();
+  const handleWithdraw = async () => {
+    try {
+      const res = await fetch("/api/withdraw", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: Number(amount), destinationAccountId: "bank_5678" })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Withdrawal initiated successfully!");
+        router.push("/");
+      } else {
+        alert("Mock API response error.\n" + (data.error || ""));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
       <div className="layout-container flex h-full grow flex-col">
@@ -46,7 +70,7 @@ export default function WithdrawReview() {
                   <span className="material-symbols-outlined text-slate-400" style={{ fontSize: "20px" }}>payments</span>
                   <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Amount</p>
                 </div>
-                <p className="text-slate-900 dark:text-slate-100 text-sm font-semibold">$500.00</p>
+                <p className="text-slate-900 dark:text-slate-100 text-sm font-semibold">{`${amount}`}</p>
               </div>
               <div className="flex justify-between items-center py-4 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-3">
@@ -60,12 +84,12 @@ export default function WithdrawReview() {
             <div className="mb-8 rounded-xl p-6 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
               <div className="flex flex-col gap-1">
                 <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-bold">Total Withdrawal Amount</p>
-                <p className="text-primary tracking-tight text-4xl font-extrabold leading-tight">$500.00</p>
+                <p className="text-primary tracking-tight text-4xl font-extrabold leading-tight">{`${amount}`}</p>
               </div>
             </div>
 
             <div className="flex flex-col gap-4">
-              <button className="flex w-full cursor-pointer items-center justify-center rounded-lg h-14 px-6 bg-primary text-white text-base font-bold transition-all hover:bg-primary/90 shadow-lg shadow-primary/20">
+              <button onClick={handleWithdraw} className="flex w-full cursor-pointer items-center justify-center rounded-lg h-14 px-6 bg-primary text-white text-base font-bold transition-all hover:bg-primary/90 shadow-lg shadow-primary/20">
                 <span className="truncate">Confirm Withdrawal</span>
               </button>
               <Link href="/withdraw/amount" className="flex w-full cursor-pointer items-center justify-center rounded-lg h-12 px-6 bg-transparent text-slate-600 dark:text-slate-400 text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
@@ -87,5 +111,13 @@ export default function WithdrawReview() {
         </footer>
       </div>
     </div>
+  );
+}
+
+export default function WithdrawReview() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <WithdrawReviewContent />
+    </Suspense>
   );
 }

@@ -1,7 +1,9 @@
+"use client";
+import { Suspense } from "react";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 
-export default function DepositReview() {
+function DepositReviewContent() {
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
       <div className="layout-container flex h-full grow flex-col">
@@ -120,5 +122,13 @@ export default function DepositReview() {
         <BottomNav />
       </div>
     </div>
+  );
+}
+
+export default function DepositReview() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DepositReviewContent />
+    </Suspense>
   );
 }

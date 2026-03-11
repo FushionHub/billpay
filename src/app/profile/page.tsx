@@ -1,7 +1,23 @@
+"use client";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 
 export default function Profile() {
+  const generateVirtualAccount = async () => {
+    try {
+      const res = await fetch("/api/virtual-account", { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ currency: "USD" }) });
+      const data = await res.json();
+      if(data.success) alert("Virtual Account created!"); else alert("Error: " + data.error);
+    } catch (e) { console.error(e); }
+  };
+
+  const generateVirtualCard = async () => {
+    try {
+      const res = await fetch("/api/virtual-card", { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ currency: "USD" }) });
+      const data = await res.json();
+      if(data.success) alert("Virtual Card created!"); else alert("Error: " + data.error);
+    } catch (e) { console.error(e); }
+  };
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
       <div className="layout-container flex h-full grow flex-col">
@@ -42,7 +58,7 @@ export default function Profile() {
               <section>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">Linked Accounts</h3>
-                  <button className="text-primary text-sm font-semibold hover:underline">Add New</button>
+                  <div className="flex gap-2"><button onClick={generateVirtualAccount} className="text-primary text-sm font-semibold hover:underline">Add Virtual Account</button><button onClick={generateVirtualCard} className="text-primary text-sm font-semibold hover:underline">Add Virtual Card</button></div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex items-center gap-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 hover:border-primary/50 transition-colors cursor-pointer">
