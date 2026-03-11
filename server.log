@@ -13,3 +13,14 @@
  GET /giftcards 200 in 1307ms (compile: 778ms, render: 529ms)
  GET /send/amount 200 in 870ms (compile: 679ms, render: 191ms)
  GET /profile 200 in 819ms (compile: 599ms, render: 220ms)
+✓ Compiled in 1389ms
+ GET /send/amount 200 in 1464ms (compile: 759ms, render: 705ms)
+○ Compiling /send/review ...
+ GET /send/review?amount=150.75 200 in 3.4s (compile: 3.3s, render: 160ms)
+ GET /deposit 200 in 977ms (compile: 857ms, render: 121ms)
+ GET /profile 200 in 380ms (compile: 218ms, render: 162ms)
+✓ Compiled in 36ms
+ GET /send/amount 200 in 102ms (compile: 7ms, render: 95ms)
+ GET /send/review?amount=150.75 200 in 67ms (compile: 5ms, render: 62ms)
+ GET /deposit 200 in 287ms (compile: 96ms, render: 191ms)
+ GET /profile 200 in 52ms (compile: 3ms, render: 49ms)

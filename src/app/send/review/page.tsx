@@ -1,7 +1,31 @@
+"use client";
+import { Suspense } from "react";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 
-export default function SendReview() {
+import { useSearchParams, useRouter } from "next/navigation";
+function SendReviewContent() {
+  const searchParams = useSearchParams();
+  const amount = searchParams.get("amount") || "250.00";
+  const router = useRouter();
+  const handleSend = async () => {
+    try {
+      const res = await fetch("/api/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: Number(amount), recipientId: "alex_j" })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Money sent successfully!");
+        router.push("/");
+      } else {
+        alert("Mock error.\n" + (data.error || ""));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
       <div className="layout-container flex h-full grow flex-col">
@@ -91,7 +115,7 @@ export default function SendReview() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+              <button onClick={handleSend} className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
                 <span className="material-symbols-outlined">send</span>
                 Confirm & Send $250.00
               </button>
@@ -109,5 +133,13 @@ export default function SendReview() {
         <BottomNav />
       </div>
     </div>
+  );
+}
+
+export default function SendReview() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SendReviewContent />
+    </Suspense>
   );
 }
