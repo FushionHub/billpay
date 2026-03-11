@@ -1,6 +1,37 @@
+"use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+type ServiceItem = {
+  id: string;
+  provider: string;
+  type: string;
+  name: string;
+  price: string;
+  icon: string;
+};
 
 export default function GiftCards() {
+  const [services, setServices] = useState<ServiceItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const res = await fetch('/api/services');
+        const data = await res.json();
+        if (data.success) {
+          setServices(data.services);
+        }
+      } catch (e) {
+        console.error("Failed to load dynamic services", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchServices();
+  }, []);
+
   return (
     <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 transition-colors duration-300">
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
@@ -52,7 +83,6 @@ export default function GiftCards() {
                   </div>
                 </div>
               </div>
-
               <div className="group relative overflow-hidden rounded-xl bg-orange-500/10 p-1">
                 <div className="relative h-48 w-full overflow-hidden rounded-lg bg-white dark:bg-slate-900">
                   <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-transparent"></div>
@@ -66,7 +96,6 @@ export default function GiftCards() {
                   </div>
                 </div>
               </div>
-
               <div className="group relative overflow-hidden rounded-xl bg-purple-500/10 p-1">
                 <div className="relative h-48 w-full overflow-hidden rounded-lg bg-white dark:bg-slate-900">
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-transparent"></div>
@@ -86,26 +115,27 @@ export default function GiftCards() {
           <section className="mb-8">
             <div className="flex flex-wrap gap-3">
               <button className="flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-bold text-white">
-                <span className="material-symbols-outlined text-lg">apps</span> All
+                <span className="material-symbols-outlined text-lg">apps</span>
+                All
               </button>
               <button className="flex items-center gap-2 rounded-full bg-white dark:bg-slate-800 px-6 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-primary/10 transition-colors">
-                <span className="material-symbols-outlined text-lg">sports_esports</span> Gaming
+                <span className="material-symbols-outlined text-lg">bolt</span>
+                Bills
               </button>
               <button className="flex items-center gap-2 rounded-full bg-white dark:bg-slate-800 px-6 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-primary/10 transition-colors">
-                <span className="material-symbols-outlined text-lg">shopping_bag</span> Shopping
+                <span className="material-symbols-outlined text-lg">phone_iphone</span>
+                Airtime & Data
               </button>
               <button className="flex items-center gap-2 rounded-full bg-white dark:bg-slate-800 px-6 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-primary/10 transition-colors">
-                <span className="material-symbols-outlined text-lg">movie</span> Lifestyle
-              </button>
-              <button className="flex items-center gap-2 rounded-full bg-white dark:bg-slate-800 px-6 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-primary/10 transition-colors">
-                <span className="material-symbols-outlined text-lg">restaurant</span> Dining
+                <span className="material-symbols-outlined text-lg">trending_up</span>
+                Investments
               </button>
             </div>
           </section>
 
           <section>
             <div className="mb-6 flex items-center justify-between">
-              <h3 className="text-xl font-bold">Explore Marketplace</h3>
+              <h3 className="text-xl font-bold">Explore Marketplace & Services</h3>
               <div className="flex items-center gap-2 text-sm text-slate-500">
                 <span>Sort by:</span>
                 <select className="bg-transparent border-none focus:ring-0 font-bold text-slate-900 dark:text-slate-100 cursor-pointer">
@@ -116,32 +146,49 @@ export default function GiftCards() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {[
-                { name: 'Google Play', price: '$10 - $200', tag: 'Gaming', img: 'AB6AXuB0G7Jyhr5UnqCPK3SpLTlEGnA5eTtKujm5ls3KsVRDUbBoGKgLVeDHDfe_kfpV85zFTROlGj3tjJb54--Ds4hbvGE_-B_oSLvfJhwX22uglfEK-tpQacLZ9vMlBgBfovjAf8JKViZ0SgXMLhR5mcUumFeLVoUTAe0AMuOvO1-LLMkIU-Jj2XZXBTMMeO-TqUl0oGAoIDoILpycU0K73pMwD16oSpr-jCaleGCqk4MaGZaqVyveWc4tf7QawPh5yjwsl66uEOZMxdyo' },
-                { name: 'Netflix', price: '$15 - $100', tag: 'Lifestyle', img: 'AB6AXuB68xPWPvmt2ViABq1Rg5YvwzLBXl2Gig9RquYvI24Gro6Ze3OF8iykW05OTuQNjRPUTi2JsxDaNVXJkzGB2ayelZge1yPYZDVhs2Gvc5R8gRsYi0EDrOfeeBSk0XGUYuDscdLLwd4NqZ8TlOBdqLWJj51uUGhZbxUq0vi1dyelQGLtkozSbpCuWFjmpyR_D2q6_WVylHJNT3NqtNw3bVuJDIdfW4AJ9htkGBlSn_jPLQ6vNscFFrocsStuNvSp6BfILhAlrscmS1HM' },
-                { name: 'Spotify', price: '$10 - $60', tag: 'Lifestyle', img: 'AB6AXuDTcSuwjO7Ogw868zecEqQgG9-Qbqxs_KpBjzPJHxvboaQC2tjybAGm-MBtwJAwfujhLMwkvNcI31NTW_AW9oDfTlbEIPbdQocIlmywYqzZ7pCwCEp_72OSeAZketd2_wkjRHjsnqaIX0v7EqFAmA1tAx2YOeircR144ty0YMe32tKGpkGFk2Cl0ijO6qiLzLv-J2ILd1bHj96uDPnR0Rka8R6l_kIw0Ztq44VIAKwvcnG8ZBJ98i_wCIBde7WJLMRLAZpStbD5C4Rz' },
-                { name: 'Roblox', price: '$10 - $100', tag: 'Gaming', img: 'AB6AXuAKIQ_Aidi6orzoli-28eA0BmQcxKbd3H_QNY_4jeAhhtvQYaIvkbqTJU-5DhjbPO_rfLaA3Ro1XCJNCZKmob_BOE5u-QBleCZ7Qs-bJduDbgd7-JVQVFeOLN9BwuHXaHMI1L_zPvHFwPvA_wlrceDd4Hn7FJtGyxepiw9JN_7KT1AJX5Y2ZF6XQOJT-4SLmZymtb_BYBa-zatjH1HrvZvNfupZ1T6BF3LWggXXjJRz7II-HpUCR9Jl9vmYm2U5EN59_cFOAy03EG4g' },
-                { name: 'Starbucks', price: '$5 - $100', tag: 'Dining', img: 'AB6AXuD8_EBYgGbr3R1z6djPfCZ6rdarf1Ge8HkeAZY7A96OZc_reGRikS_i586pk7y7RvJ80vJVaAZjIyTyRXu0EC78qUSmcJ1PA8f_XoqaxGzZkpuEuPM2Lmz_P2teT9aWI9gmiEGbRfgRkCsjVYw8Dmgz6Rz4uncqNmkuiHBeySd9yoeqy7Jwtd9tcnexsPMqO04XP2xAvcfcd-JuDYDbbaJz0KCwI0_px8DDbG78bqfi-O_MB-rdM8VJP_PS-04pZ-4LwH5dHvppj3Tl' },
-                { name: 'PlayStation Store', price: '$10 - $100', tag: 'Gaming', img: 'AB6AXuAnAVwuCo4HHc1VcToYSxLJBkk4cjEUTGBifbujCulGcMPCoOdwMK3h59ftn00wKILh33ylnXm-io77lHvV_PYcmwA9HA2LRE64Oq5uu18W3Y60fvWneTv0NuLiyMSutLln9wfPccTT_lx0602vTNlzGCrKHar6zWbO80yJJJFcm-wRLQ46MsbgOtr26QkwkwT4FnEGqHBNToJ961WVba-nd9TZlPD9FefT_BzUAZf3OVfk5C9fiJI05OLICPY7A52vExeFrxryRtAX' },
-                { name: 'Target', price: '$10 - $500', tag: 'Shopping', img: 'AB6AXuBRPEft8sXyCqg28SFIB9GR3y7EIdz3LhYPbTc8fGJkhgPA9UCXTHbGNXYZ8j5W-q7ElFOLcLJ5T2nkqqjkxXHv_-C3hXptH7DsAQoCUunLej9QrvBmjwv7vZUySTscVdDFR6uEvq3t2V6wEDgXCtGeFIL4hzAIOldGTha6tjN0ODy2sEKOwj2nCAIPB1E7-g9rl5S_e2dfzkxjWCQxLI0Vl0UgGWH0KJb4_RZlkv8J8ZGMiO5w6l-bob4BdGKCdnwtIquoe6sCOzhz' },
-                { name: 'Uber', price: '$15 - $200', tag: 'Lifestyle', img: 'AB6AXuC1jETdLpVrC9brvDWSy9yUFRoP63EN4HqbEpc2DF_OixcykBhAuvd3foLNHD1rj5I_3IA0K1DqCiTVYey2iZ_HzAmomLYiwX5J2BgVK7kJ-4Ky7Ej87n3JBfDHOYqSRvjGqKM1Ef7R8qQke6gI5hZFB_RwDKiBpXM1WFWEt9GZzOKAtXM9qvCeR5tzy-o9iMgORLYdXRU5lc41YmPDIsn6NCu3e-ztNWdC8vWOoD97Nbhi0JYeTkgc5pNvRaHnpVdetl5zxnBkFfTo' },
-                { name: 'Nintendo eShop', price: '$5 - $50', tag: 'Gaming', img: 'AB6AXuAsBxNlz_YFz8926iN5nG566F8AkScmOcOSZI_R3zYKWOTNa-YFfzYsZuiDveEYSw6rzm_N1WJVLSnBGOCw2UaFEi_MjcNd8YCgPk_r0QVmuAnvwRTpBpDtEZl29SZWcQ5WaeYMtaaHh-uupn0gqBzqYx5xniPNtU1jMqCZBtChoTvJpsegH8GF5_WY9dOX-cXsKJ4jGJCg2caETC_D8auj5pmm7IDESrl6VQ_H3sNJa8u3z8KF4Tbum9SgUiEEDGAPXDCPBxrxbU5S' },
-                { name: 'Airbnb', price: '$25 - $500', tag: 'Lifestyle', img: 'AB6AXuAzACSu9m9Nt7BTN0aV9PedcG3YEd7fQjqz060Uxj2b0l-VlbhsoEz5qO74PJYwCCUZayJIZ0VApkW9KI5_vXMpOm9XEUOZamai6mFcPJ1FKmudcDCSP-A0bvtlGYBilf3rHG-vUZAZ4ebTA6wBrt1ATMGEtYiNwdPUcp_fgzQHN68cPf-2Ax0ZHb7Vahu8cUrBz-jAXS_acZGm9FvD_Ou4u5qNt-CsR8iBVehxefp90kQaXS7uvofPTMd5D1qtW0wgIkC4XK-KVpXQ' }
-              ].map((card, i) => (
-                <div key={i} className="flex flex-col group cursor-pointer">
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-800 p-6 flex flex-col items-center justify-center transition-all hover:shadow-xl hover:-translate-y-1">
-                    <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors"></div>
-                    <img className="w-16 h-16 object-contain mb-4" alt={`${card.name} brand`} src={`https://lh3.googleusercontent.com/aida-public/${card.img}`} />
-                    <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">{card.tag}</span>
-                  </div>
-                  <div className="mt-3">
-                    <h5 className="font-bold">{card.name}</h5>
-                    <p className="text-sm text-slate-500">{card.price}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {loading ? (
+              <div className="text-center py-12">Loading dynamic services...</div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                {/* Dynamically fetched services */}
+                {services.map((service) => (
+                  <Link href="/send/amount" key={service.id} className="flex flex-col group cursor-pointer">
+                    <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-800 p-6 flex flex-col items-center justify-center transition-all hover:shadow-xl hover:-translate-y-1">
+                      <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors"></div>
+                      <div className="w-16 h-16 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 mb-4 text-primary">
+                        <span className="material-symbols-outlined text-3xl">{service.icon}</span>
+                      </div>
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">{service.type}</span>
+                    </div>
+                    <div className="mt-3">
+                      <h5 className="font-bold truncate" title={service.name}>{service.name}</h5>
+                      <p className="text-sm text-slate-500">{service.price}</p>
+                    </div>
+                  </Link>
+                ))}
+
+                {/* Legacy static gift cards */}
+                {[
+                  { name: 'Google Play', price: '$10 - $200', tag: 'Gaming', img: 'AB6AXuB0G7Jyhr5UnqCPK3SpLTlEGnA5eTtKujm5ls3KsVRDUbBoGKgLVeDHDfe_kfpV85zFTROlGj3tjJb54--Ds4hbvGE_-B_oSLvfJhwX22uglfEK-tpQacLZ9vMlBgBfovjAf8JKViZ0SgXMLhR5mcUumFeLVoUTAe0AMuOvO1-LLMkIU-Jj2XZXBTMMeO-TqUl0oGAoIDoILpycU0K73pMwD16oSpr-jCaleGCqk4MaGZaqVyveWc4tf7QawPh5yjwsl66uEOZMxdyo' },
+                  { name: 'Netflix', price: '$15 - $100', tag: 'Lifestyle', img: 'AB6AXuB68xPWPvmt2ViABq1Rg5YvwzLBXl2Gig9RquYvI24Gro6Ze3OF8iykW05OTuQNjRPUTi2JsxDaNVXJkzGB2ayelZge1yPYZDVhs2Gvc5R8gRsYi0EDrOfeeBSk0XGUYuDscdLLwd4NqZ8TlOBdqLWJj51uUGhZbxUq0vi1dyelQGLtkozSbpCuWFjmpyR_D2q6_WVylHJNT3NqtNw3bVuJDIdfW4AJ9htkGBlSn_jPLQ6vNscFFrocsStuNvSp6BfILhAlrscmS1HM' },
+                  { name: 'Spotify', price: '$10 - $60', tag: 'Lifestyle', img: 'AB6AXuDTcSuwjO7Ogw868zecEqQgG9-Qbqxs_KpBjzPJHxvboaQC2tjybAGm-MBtwJAwfujhLMwkvNcI31NTW_AW9oDfTlbEIPbdQocIlmywYqzZ7pCwCEp_72OSeAZketd2_wkjRHjsnqaIX0v7EqFAmA1tAx2YOeircR144ty0YMe32tKGpkGFk2Cl0ijO6qiLzLv-J2ILd1bHj96uDPnR0Rka8R6l_kIw0Ztq44VIAKwvcnG8ZBJ98i_wCIBde7WJLMRLAZpStbD5C4Rz' },
+                  { name: 'Roblox', price: '$10 - $100', tag: 'Gaming', img: 'AB6AXuAKIQ_Aidi6orzoli-28eA0BmQcxKbd3H_QNY_4jeAhhtvQYaIvkbqTJU-5DhjbPO_rfLaA3Ro1XCJNCZKmob_BOE5u-QBleCZ7Qs-bJduDbgd7-JVQVFeOLN9BwuHXaHMI1L_zPvHFwPvA_wlrceDd4Hn7FJtGyxepiw9JN_7KT1AJX5Y2ZF6XQOJT-4SLmZymtb_BYBa-zatjH1HrvZvNfupZ1T6BF3LWggXXjJRz7II-HpUCR9Jl9vmYm2U5EN59_cFOAy03EG4g' },
+                  { name: 'Starbucks', price: '$5 - $100', tag: 'Dining', img: 'AB6AXuD8_EBYgGbr3R1z6djPfCZ6rdarf1Ge8HkeAZY7A96OZc_reGRikS_i586pk7y7RvJ80vJVaAZjIyTyRXu0EC78qUSmcJ1PA8f_XoqaxGzZkpuEuPM2Lmz_P2teT9aWI9gmiEGbRfgRkCsjVYw8Dmgz6Rz4uncqNmkuiHBeySd9yoeqy7Jwtd9tcnexsPMqO04XP2xAvcfcd-JuDYDbbaJz0KCwI0_px8DDbG78bqfi-O_MB-rdM8VJP_PS-04pZ-4LwH5dHvppj3Tl' }
+                ].map((card, i) => (
+                  <Link href="/send/amount" key={i} className="flex flex-col group cursor-pointer">
+                    <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-800 p-6 flex flex-col items-center justify-center transition-all hover:shadow-xl hover:-translate-y-1">
+                      <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors"></div>
+                      <img className="w-16 h-16 object-contain mb-4" alt={`${card.name} brand`} src={`https://lh3.googleusercontent.com/aida-public/${card.img}`} />
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">{card.tag}</span>
+                    </div>
+                    <div className="mt-3">
+                      <h5 className="font-bold truncate">{card.name}</h5>
+                      <p className="text-sm text-slate-500">{card.price}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
 
             <div className="mt-12 flex justify-center">
               <button className="rounded-lg border border-slate-200 dark:border-slate-800 px-8 py-3 text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">

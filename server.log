@@ -83,3 +83,5 @@ Supabase Error: {
 }
  POST /api/deposit 200 in 267ms (compile: 3ms, render: 264ms)
  GET / 200 in 20ms (compile: 3ms, render: 17ms)
+✓ Compiled in 2s
+ GET /giftcards 200 in 2.2s (compile: 1231ms, render: 956ms)
