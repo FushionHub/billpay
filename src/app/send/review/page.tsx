@@ -4,7 +4,9 @@ import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 
 import { useSearchParams, useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext";
 function SendReviewContent() {
+  const { updateBalance, addTransaction } = useUser();
   const searchParams = useSearchParams();
   const amount = searchParams.get("amount") || "250.00";
   const router = useRouter();
@@ -18,6 +20,19 @@ function SendReviewContent() {
       const data = await res.json();
       if (data.success) {
         alert("Money sent successfully!");
+
+        updateBalance(-Number(amount));
+        addTransaction({
+            id: String(Date.now()),
+            title: 'Transfer to Alex J.',
+            date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            type: 'Transfer',
+            amount: -Number(amount),
+            status: 'Success',
+            icon: 'send',
+            iconColor: 'text-blue-500'
+        });
+
         router.push("/");
       } else {
         alert("Mock error.\n" + (data.error || ""));

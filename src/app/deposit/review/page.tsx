@@ -4,7 +4,9 @@ import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 
 import { useSearchParams, useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext";
 function DepositReviewContent() {
+  const { updateBalance, addTransaction } = useUser();
   const searchParams = useSearchParams();
   const amount = searchParams.get("amount") || "1250.00";
   const router = useRouter();
@@ -18,6 +20,19 @@ function DepositReviewContent() {
       const data = await res.json();
       if (data.success) {
         alert("Deposit successful!");
+
+        updateBalance(Number(amount));
+        addTransaction({
+            id: String(Date.now()),
+            title: 'Deposit from Bank',
+            date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            type: 'Wallet',
+            amount: Number(amount),
+            status: 'Success',
+            icon: 'download',
+            iconColor: 'text-primary'
+        });
+
         router.push("/");
       } else {
         alert("Mock error.\n" + (data.error || ""));

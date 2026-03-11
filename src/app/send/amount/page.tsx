@@ -1,7 +1,12 @@
+"use client";
+import { useState } from "react";
+import { useUser } from "@/context/UserContext";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 
 export default function SendAmount() {
+  const { balance } = useUser();
+  const [amount, setAmount] = useState("");
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
       <div className="layout-container flex h-full grow flex-col">
@@ -51,12 +56,12 @@ export default function SendAmount() {
               <label className="block text-center text-slate-500 dark:text-slate-400 text-sm font-medium mb-2 uppercase tracking-wide">Enter Amount</label>
               <div className="relative flex items-center justify-center">
                 <span className="text-4xl lg:text-5xl font-bold text-slate-400 dark:text-slate-600 mr-2">$</span>
-                <input className="w-full max-w-[240px] border-none bg-transparent text-center text-5xl lg:text-6xl font-bold text-primary focus:ring-0 placeholder:text-slate-200 dark:placeholder:text-slate-800 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [-moz-appearance:textfield]" min="0" placeholder="0.00" step="0.01" type="number" />
+                <input className="w-full max-w-[240px] border-none bg-transparent text-center text-5xl lg:text-6xl font-bold text-primary focus:ring-0 placeholder:text-slate-200 dark:placeholder:text-slate-800 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [-moz-appearance:textfield]" min="0" placeholder="0.00" step="0.01" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
               </div>
               <div className="mt-4 flex flex-col items-center">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/5 dark:bg-primary/10 rounded-full border border-primary/10">
                   <span className="material-symbols-outlined text-primary text-sm">account_balance_wallet</span>
-                  <p className="text-primary text-sm font-semibold">Balance: $4,250.50</p>
+                  <p className="text-primary text-sm font-semibold">Balance: ${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
                 </div>
               </div>
             </div>
@@ -88,7 +93,7 @@ export default function SendAmount() {
             </div>
 
             <div className="mt-10 space-y-3">
-              <Link href="/send/review" className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+              <Link href={`/send/review?amount=${amount}`} className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
                 <span>Continue</span>
                 <span className="material-symbols-outlined">arrow_forward</span>
               </Link>
