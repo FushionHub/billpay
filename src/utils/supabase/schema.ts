@@ -1,10 +1,6 @@
 import { supabaseAdmin } from '../supabase/admin';
 
 export async function setupDatabase() {
-    // Note: Since this is a serverless environment and we may not have a real Supabase
-    // instance running right now, this is mocked/scaffolded for a real deployment.
-    // In a real app, you would use Supabase migrations or execute these SQL statements.
-
     const createUsersTable = `
         CREATE TABLE IF NOT EXISTS public.users (
             id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -41,6 +37,8 @@ export async function setupDatabase() {
         );
     `;
 
-    console.log('Database schema definitions created (mock setup)');
-    // supabaseAdmin.rpc('exec_sql', { sql: createUsersTable })
+    console.log('Database schema definitions created');
+    await supabaseAdmin.rpc('exec_sql', { sql: createUsersTable });
+    await supabaseAdmin.rpc('exec_sql', { sql: createAccountsTable });
+    await supabaseAdmin.rpc('exec_sql', { sql: createTransactionsTable });
 }
