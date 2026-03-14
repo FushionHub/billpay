@@ -1,31 +1,57 @@
 import { NextResponse } from 'next/server';
 
-// Mock function to simulate Flutterwave API call for bills, airtime, and data
 async function fetchFlutterwaveServices() {
-  // In a real implementation, you would use 'node-fetch' or similar to call the Flutterwave API
-  // const response = await fetch('https://api.flutterwave.com/v3/bill-categories', {
-  //   headers: { Authorization: `Bearer ${process.env.FLW_SECRET_KEY}` }
-  // });
+  const FLUTTERWAVE_SECRET_KEY = process.env.FLUTTERWAVE_SECRET_KEY;
+  if (!FLUTTERWAVE_SECRET_KEY) return [];
 
-  return [
-    { id: 'fw-1', provider: 'flutterwave', type: 'airtime', name: 'MTN Airtime', price: '$5 - $100', icon: 'phone_iphone' },
-    { id: 'fw-2', provider: 'flutterwave', type: 'data', name: 'Airtel Data Bundle', price: '$10 - $50', icon: 'wifi' },
-    { id: 'fw-3', provider: 'flutterwave', type: 'bill', name: 'DSTV Subscription', price: '$20 - $100', icon: 'tv' },
-    { id: 'fw-4', provider: 'flutterwave', type: 'bill', name: 'Ikeja Electric', price: '$10 - $200', icon: 'bolt' },
-  ];
+  try {
+    const response = await fetch('https://api.flutterwave.com/v3/bill-categories?biller_code=AIRTIME', {
+      headers: { Authorization: `Bearer ${FLUTTERWAVE_SECRET_KEY}` },
+    });
+
+    if (!response.ok) return [];
+
+    const data = await response.json();
+    return data.data.slice(0, 4).map((item: any) => ({
+      id: `fw-${item.id}`,
+      provider: 'flutterwave',
+      type: item.biller_name.toLowerCase().includes('data') ? 'data' : 'airtime',
+      name: item.biller_name,
+      price: item.amount > 0 ? `$${item.amount}` : 'Variable',
+      icon: item.biller_name.toLowerCase().includes('data') ? 'wifi' : 'phone_iphone'
+    }));
+  } catch (error) {
+    console.error("Flutterwave API error:", error);
+    return [];
+  }
 }
 
-// Mock function to simulate AFX API call for bills and investments
 async function fetchAFXServices() {
-  // const response = await fetch('https://api.afx.com/v1/services', {
-  //   headers: { Authorization: `Bearer ${process.env.AFX_API_KEY}` }
-  // });
+  const AFX_API_URL = process.env.AFX_API_URL || 'https://prod.afx-server.com';
+  const AFX_API_KEY = process.env.AFX_API_KEY;
 
-  return [
-    { id: 'afx-1', provider: 'afx', type: 'investment', name: 'S&P 500 Index Fund', price: 'Min $50', icon: 'trending_up' },
-    { id: 'afx-2', provider: 'afx', type: 'investment', name: 'Real Estate REIT', price: 'Min $100', icon: 'real_estate_agent' },
-    { id: 'afx-3', provider: 'afx', type: 'bill', name: 'Global Water Utility', price: 'Variable', icon: 'water_drop' },
-  ];
+  if (!AFX_API_KEY) return [];
+
+  try {
+    const response = await fetch(`${AFX_API_URL}/api/v1/services`, {
+      headers: { 'x-api-key': AFX_API_KEY },
+    });
+
+    if (!response.ok) return [];
+
+    const data = await response.json();
+    return data.services.map((item: any) => ({
+      id: `afx-${item.id}`,
+      provider: 'afx',
+      type: item.type || 'investment',
+      name: item.name,
+      price: item.price || 'Variable',
+      icon: item.type === 'investment' ? 'trending_up' : 'water_drop'
+    }));
+  } catch (error) {
+    console.error("AFX API error:", error);
+    return [];
+  }
 }
 
 export async function GET() {

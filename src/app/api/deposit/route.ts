@@ -1,36 +1,55 @@
 import { NextResponse } from 'next/server';
 import { routePayment } from '@/utils/router/paymentRouter';
 import { supabaseAdmin } from '@/utils/supabase/admin';
+import { createClient } from '@/utils/supabase/server';
 
 export async function POST(req: Request) {
     try {
+        const supabase = await createClient();
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+        }
+
         const { amount, sourceAccountId, destinationAccountId } = await req.json();
 
-        // 1. Verify user authentication via Supabase (mocked for now)
-        // 2. Fetch AFX Customer ID from DB
-        const mockCustomerId = 'cust_123456';
+        // Fetch AFX Customer ID from DB
+        const { data: userData, error: userError } = await supabaseAdmin
+            .from('users')
+            .select('afx_customer_id')
+            .eq('id', user.id)
+            .single();
 
-        // 3. Initiate Transaction on AFX
+        if (userError || !userData?.afx_customer_id) {
+            return NextResponse.json({ success: false, error: 'User not found or AFX ID missing' }, { status: 404 });
+        }
 
-        const routingResult = await routePayment({
-            userId: mockCustomerId,
-            amount: Number(amount),
-            currency: 'USD',
-            destinationId: destinationAccountId
-        });
+        // In a real application, a deposit would involve charging a saved card or bank account
+        // via a provider's payment intent / charge API (e.g., Stripe, AFX inbound, Flutterwave charge).
+        // Since `routePayment` is strictly an outbound fallback router for payouts, we mock a successful
+        // inbound charge here to represent a deposit to the user's wallet.
+
+        const mockChargeTransactionId = `dep_${Date.now()}`;
+        const mockGateway = 'afx_charge';
 
         const { error: dbError } = await supabaseAdmin.from('transactions').insert({
-            afx_transaction_id: routingResult.transaction?.id || routingResult.transaction?.batch_header?.payout_batch_id || 'mock_id',
+            afx_transaction_id: mockChargeTransactionId,
+            user_id: user.id,
             type: 'DEPOSIT',
             amount: Number(amount),
             currency: 'USD',
-            status: 'PENDING',
-            // @ts-ignore
-            gateway_used: routingResult.gateway
+            status: 'SUCCESS', // Automatically assuming success for demonstration purposes
+            gateway_used: mockGateway
         });
+
         if (dbError) console.error('Supabase Error:', dbError);
 
-        return NextResponse.json({ success: true, gateway: routingResult.gateway, transaction: routingResult.transaction });
+        return NextResponse.json({
+            success: true,
+            gateway: mockGateway,
+            transaction: { id: mockChargeTransactionId, status: 'SUCCESS' }
+        });
 
     } catch (error: any) {
         console.error('Deposit Error:', error);

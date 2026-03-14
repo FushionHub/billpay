@@ -1,19 +1,36 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/utils/supabase/admin';
 import { createAfxVirtualCard } from '@/utils/afx/api';
+import { createClient } from '@/utils/supabase/server';
 
 export async function POST(req: Request) {
     try {
+        const supabase = await createClient();
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+        }
+
         const { currency } = await req.json();
-        const mockCustomerId = 'cust_123456';
 
-        const afxResponse = await createAfxVirtualCard(mockCustomerId, currency || 'USD');
+        // Fetch AFX Customer ID from DB
+        const { data: userData, error: userError } = await supabaseAdmin
+            .from('users')
+            .select('afx_customer_id')
+            .eq('id', user.id)
+            .single();
 
-        // Here we would save the new virtual card into our Supabase `accounts` table
+        if (userError || !userData?.afx_customer_id) {
+            return NextResponse.json({ success: false, error: 'User not found or AFX ID missing' }, { status: 404 });
+        }
 
+        const afxResponse = await createAfxVirtualCard(userData.afx_customer_id, currency || 'USD');
 
+        // Save the new virtual card into our Supabase `accounts` table
         const { error: dbError } = await supabaseAdmin.from('accounts').insert({
-            afx_payment_method_id: afxResponse.id || 'mock_pm_id',
+            user_id: user.id,
+            afx_payment_method_id: afxResponse.id,
             type: 'VIRTUAL_CARD',
             name: 'Virtual Debit Card'
         });
