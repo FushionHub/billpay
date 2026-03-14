@@ -40,7 +40,6 @@ export async function POST(req: Request) {
             amount: Number(amount),
             currency: 'USD',
             status: 'SUCCESS', // Automatically assuming success for demonstration purposes
-            // @ts-ignore
             gateway_used: mockGateway
         });
 

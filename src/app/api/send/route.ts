@@ -45,7 +45,6 @@ export async function POST(req: Request) {
             currency: 'USD',
             status: 'PENDING',
             recipient_id: recipientId, // Assuming recipientId is a valid UUID representing a user
-            // @ts-ignore
             gateway_used: routingResult.gateway
         });
 

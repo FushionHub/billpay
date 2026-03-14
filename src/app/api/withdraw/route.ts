@@ -41,7 +41,6 @@ export async function POST(req: Request) {
             amount: Number(amount),
             currency: 'USD',
             status: 'PENDING',
-            // @ts-ignore - Assuming a 'gateway' column exists or using JSONB metadata in a real schema
             gateway_used: routingResult.gateway
         });
 

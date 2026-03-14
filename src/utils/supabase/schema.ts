@@ -33,6 +33,7 @@ export async function setupDatabase() {
             currency TEXT DEFAULT 'USD',
             status TEXT DEFAULT 'PENDING',
             recipient_id UUID REFERENCES public.users(id),
+            gateway_used TEXT,
             created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
         );
     `;
