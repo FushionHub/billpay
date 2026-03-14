@@ -1,22 +1,21 @@
 import { createAfxTransaction } from '../afx/api';
 import { createFlutterwaveTransfer } from '../flutterwave/api';
-import { createPayPalPayout } from '../paypal/api';
 
 /**
  * PaymentRouter automatically attempts to process an outbound transfer/withdrawal
- * using a cascading fallback strategy across our 3 supported gateways: AFX, Flutterwave, and PayPal.
+ * using a cascading fallback strategy across our supported gateways: AFX and Flutterwave.
  */
 export async function routePayment(params: {
     userId: string,
     amount: number,
     currency: string,
-    destinationId: string, // This could be an AFX id, a bank account number, or a PayPal email depending on user preference
-    preferredGateway?: 'afx' | 'flutterwave' | 'paypal' // Optional hint from the frontend
+    destinationId: string,
+    preferredGateway?: 'afx' | 'flutterwave' // Optional hint from the frontend
 }) {
     const { userId, amount, currency, destinationId, preferredGateway } = params;
 
     // Define the fallback order. If a preferred gateway is provided, try it first.
-    const defaultOrder: ('afx' | 'flutterwave' | 'paypal')[] = ['afx', 'flutterwave', 'paypal'];
+    const defaultOrder: ('afx' | 'flutterwave')[] = ['afx', 'flutterwave'];
     let processingOrder = defaultOrder;
 
     if (preferredGateway) {
@@ -47,12 +46,6 @@ export async function routePayment(params: {
             if (gateway === 'flutterwave') {
                 const result = await createFlutterwaveTransfer(amount, currency, destinationId);
                 return { success: true, gateway: 'flutterwave', transaction: result };
-            }
-
-            if (gateway === 'paypal') {
-                // Note: PayPal expects an email or phone for Payouts typically.
-                const result = await createPayPalPayout(amount, currency, destinationId);
-                return { success: true, gateway: 'paypal', transaction: result };
             }
 
         } catch (error: any) {
