@@ -95,20 +95,7 @@ export default function DepositMethod() {
                 </div>
               </label>
 
-              <label className="flex items-center gap-4 bg-white dark:bg-slate-900 p-4 rounded-xl border-2 border-transparent cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-sm">
-                <div className="text-blue-500 flex items-center justify-center rounded-lg bg-blue-100 shrink-0 size-12">
-                  <span className="material-symbols-outlined text-2xl">payments</span>
-                </div>
-                <div className="flex flex-col justify-center flex-1">
-                  <p className="text-slate-900 dark:text-slate-100 text-base font-semibold leading-normal">PayPal</p>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm font-normal">Instant via PayPal account</p>
-                </div>
-                <div className="shrink-0">
-                  <input className="h-5 w-5 border-slate-300 text-primary focus:ring-primary" name="deposit-method" type="radio" value="paypal" />
-                </div>
-              </label>
-
-</div>
+              </div>
             </div>
 
             <div className="px-6 md:px-10 py-4 mb-8">
